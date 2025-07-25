@@ -1,0 +1,17 @@
+# Node
+node_modules
+.env
+
+#java /spring
+target
+.iml
+.log
+.class
+
+#os files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode
+.idea/
