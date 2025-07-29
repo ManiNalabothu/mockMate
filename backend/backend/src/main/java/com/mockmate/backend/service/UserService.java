@@ -1,7 +1,8 @@
 package com.mockmate.backend.service;
 
+import com.mockmate.backend.dto.RegisterRequest;
 import com.mockmate.backend.model.User;
-import com.mockmate.backend.repository.jpa.UserRepository;
+import com.mockmate.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,15 +27,15 @@ public class UserService {
     }
 
     public String login(String email, String password) {
-        User user = repository.findByEmail(email);
-        if (user != null && user.getPassword().equals(password)) {
+        Optional<User> user = repository.findByEmail(email);
+        if (user.isPresent() && user.get().getPassword().equals(password)) {
             return "Login successful";
         }
         return "Invalid credentials";
     }
 
     public void updateUserSkills(String email, Set<String> skills) {
-        User user = Optional.ofNullable(repository.findByEmail(email))
+        User user = repository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.setSkills(new HashSet<>(skills));
         repository.save(user);
@@ -48,7 +49,7 @@ public class UserService {
     }
 
     public boolean verifyUser(String email) {
-        Optional<User> optionalUser = Optional.ofNullable(repository.findByEmail(email));
+        Optional<User> optionalUser = repository.findByEmail(email);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             user.setVerified(true);
@@ -56,6 +57,11 @@ public class UserService {
             return true;
         }
         return false;
+    }
+
+    public boolean isPresent(RegisterRequest request) {
+        Optional<User> optionalUser = repository.findByEmail(request.getEmail());
+        return optionalUser.isPresent();
     }
 
 

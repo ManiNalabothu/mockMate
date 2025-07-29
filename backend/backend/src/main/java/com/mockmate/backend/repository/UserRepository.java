@@ -1,23 +1,22 @@
 package com.mockmate.backend.repository;
 
 import com.mockmate.backend.model.User;
-import java.util.*;
-
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
-public class UserRepository {
-    private final Map<String, User> users = new HashMap<>();
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    public void save(User user) {
-        users.put(user.getEmail(), user);
-    }
+    boolean existsByEmail(String email);
 
-    public User findByEmail(String email) {
-        return users.get(email);
-    }
+//    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
-    public boolean existsByEmail(String email) {
-        return users.containsKey(email);
-    }
+    @Query("SELECT u FROM User u JOIN u.skills s WHERE LOWER(s) = LOWER(:skill)")
+    List<User> findBySkillsContaining(@Param("skill") String skill);
 }
