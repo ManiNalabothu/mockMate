@@ -3,6 +3,7 @@ package com.mockmate.backend.controller;
 import com.mockmate.backend.dto.UpdateSkillsRequest;
 import com.mockmate.backend.model.User;
 import com.mockmate.backend.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class UserController {
     private UserService service;
 
     @PostMapping("/register")
-    public String register(@RequestBody User user) {
+    public String register(@Valid @RequestBody User user) {
         return service.register(user);
     }
 
@@ -28,7 +29,7 @@ public class UserController {
     }
 
     @PutMapping("/user/update-skills")
-    public ResponseEntity<String> updateSkills(@RequestBody UpdateSkillsRequest request) {
+    public ResponseEntity<String> updateSkills(@Valid @RequestBody UpdateSkillsRequest request) {
         service.updateUserSkills(request.getEmail(), request.getSkills());
         return ResponseEntity.ok("Skills updated successfully");
     }
